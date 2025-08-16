@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <RootNamespace>String_Decryptor</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="Bin2Object">
+      <HintPath>..\..\..\Il2CppInspectorRedux\Il2CppInspector.Common\bin\Release\net9.0\Bin2Object.dll</HintPath>
+    </Reference>
+    <Reference Include="Il2CppInspector.Common">
+      <HintPath>..\..\..\Il2CppInspectorRedux\Il2CppInspector.Common\bin\Release\net9.0\Il2CppInspector.Common.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="mkdir $(SolutionDir)..\..\..\Il2CppInspectorRedux\Il2CppInspector.GUI\bin\Release\net9.0-windows\win-x64\plugins\core-strings&#xD;&#xA;copy /y $(TargetPath) $(SolutionDir)..\..\..\Il2CppInspectorRedux\Il2CppInspector.GUI\bin\Release\net9.0-windows\win-x64\plugins\core-strings&#xD;&#xA;" />
+  </Target>
+
+</Project>

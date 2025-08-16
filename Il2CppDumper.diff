@@ -1,0 +1,34 @@
+diff --git a/Il2CppDumper/IO/BinaryStream.cs b/Il2CppDumper/IO/BinaryStream.cs
+index 043a65b..b829a54 100644
+--- a/Il2CppDumper/IO/BinaryStream.cs
++++ b/Il2CppDumper/IO/BinaryStream.cs
+@@ -213,6 +213,16 @@ namespace Il2CppDumper
+             return Encoding.UTF8.GetString(bytes.ToArray());
+         }
+ 
++        public string ReadEncryptedStringToNull(ulong addr, uint stringIndex)
++        {
++            Position = addr;
++            var bytes = new List<byte>();
++            byte b = (byte)(stringIndex % 0xFF);
++            while ((b = (byte)(ReadByte() ^ b)) != 0)
++                bytes.Add(b);
++            return Encoding.UTF8.GetString(bytes.ToArray());
++        }
++
+         public long ReadIntPtr()
+         {
+             return Is32Bit ? ReadInt32() : ReadInt64();
+diff --git a/Il2CppDumper/Il2Cpp/Metadata.cs b/Il2CppDumper/Il2Cpp/Metadata.cs
+index 800491c..7864616 100644
+--- a/Il2CppDumper/Il2Cpp/Metadata.cs
++++ b/Il2CppDumper/Il2Cpp/Metadata.cs
+@@ -181,7 +181,7 @@ namespace Il2CppDumper
+         {
+             if (!stringCache.TryGetValue(index, out var result))
+             {
+-                result = ReadStringToNull(header.stringOffset + index);
++                result = ReadEncryptedStringToNull(header.stringOffset + index, index);
+                 stringCache.Add(index, result);
+             }
+             return result;
